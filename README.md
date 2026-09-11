@@ -2,6 +2,8 @@
 
 SalesBoard is a deliberately simple Symfony backend for a live workshop about transforming a basic Symfony application into a modern interface with Twig, Tailwind CSS, and shadcn-style components. The first version keeps the UI plain so the visual transformation is easy to see.
 
+![SalesBoard dashboard](docs/images/dashboard.png)
+
 ## Technical stack
 
 - Symfony 8.1 and PHP 8.4+

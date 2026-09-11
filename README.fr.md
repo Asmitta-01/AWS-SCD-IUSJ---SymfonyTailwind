@@ -1,19 +1,47 @@
 # SalesBoard
 
-SalesBoard est le backend volontairement simple d'un atelier consacré à la transformation d'une application Symfony de base en interface moderne avec Twig, Tailwind CSS et des composants de style shadcn. La première version conserve une interface sobre afin de rendre visible l'évolution graphique pendant l'atelier.
+SalesBoard est une application éducative de gestion commerciale conçue pour un atelier. Elle part d'un backend Symfony fonctionnel et transforme progressivement son interface Twig rendue côté serveur en console SaaS moderne, inspirée d'un prototype réalisé avec Lovable.
 
-![Tableau de bord SalesBoard](docs/images/dashboard.png)
+Le [projet Lovable](https://github.com/Asmitta-01/salesboard-ui-demo) sert uniquement de référence visuelle et UX. Son architecture frontend n'est pas copiée : SalesBoard reste une application Symfony MVC classique avec Doctrine, contrôleurs, services, templates Twig et AssetMapper.
+
+![Tableau de bord SalesBoard](docs/images/dashboard-real-data-step-3.png)
+
+### Progression de l'atelier
+
+| Étape | Description | Capture |
+| --- | --- | --- |
+| 1. Fondation Symfony | Pages Twig simples, entités Doctrine, migrations et fixtures | [Dashboard initial](docs/images/dashboard.png) |
+| 2. Fondation UI | Tailwind CSS, tokens de style shadcn, composants Twig réutilisables et layout responsive | [Étape Tailwind](docs/images/dashboard-tailwind-step-2.png) |
+| 3. Données réelles | Dashboard et listes connectés aux repositories et services Doctrine | [Dashboard avec données réelles](docs/images/dashboard-real-data-step-3.png) |
 
 ## Stack technique
 
-- Symfony 8.1 et PHP 8.4+
+- PHP 8.4+ (le projet fonctionne actuellement avec PHP 8.5 en développement)
+- Symfony 8.1.x (le runtime local actuel est Symfony 8.1.6)
 - Doctrine ORM et Doctrine Migrations
-- MySQL ou MariaDB
+- MySQL 8+ ou MariaDB 10.8+
 - Twig, Symfony Forms, Validator, Serializer et UX Turbo
-- Symfony AssetMapper
+- Symfony AssetMapper et Importmap
+- Tailwind CSS 4 via SymfonyCasts Tailwind Bundle
+- Tokens Tailwind de style shadcn et `tw-animate-css`
 - DoctrineFixturesBundle et Faker
 
-React, Vue, Vite et aucun framework frontend superflu ne sont utilisés.
+L'importmap utilise actuellement `shadcn/dist/tailwind.css` en version 4.21.0 et `tw-animate-css/dist/tw-animate.css` en version 1.4.0. La feuille Google Fonts charge Inter et JetBrains Mono pour reprendre le langage visuel du prototype.
+
+React, Vue, Next.js, Vite, Angular et aucune architecture SPA ne sont utilisés.
+
+## Contexte du projet
+
+SalesBoard est un projet fictif destiné à l'apprentissage. Il fournit aux participants un backend réaliste avant la refonte de l'interface. Le domaine couvre les ventes, les clients, les produits, les transactions, les niveaux de stock et les rapports commerciaux.
+
+La séparation des responsabilités est volontairement claire :
+
+- Les entités Doctrine représentent le domaine métier.
+- Les repositories prennent en charge les listes filtrées et les agrégations.
+- `DashboardService` assemble les statistiques du dashboard et des rapports.
+- Les contrôleurs sélectionnent la page et transmettent les données préparées à Twig.
+- Les composants Twig partagent le langage visuel sans introduire de framework frontend.
+- AssetMapper charge les entrées CSS et JavaScript sans bundler ni Vite.
 
 ## Prérequis
 
@@ -80,6 +108,19 @@ php -S 127.0.0.1:8000 -t public
 | `/reports` | Statistiques mensuelles et produits les plus vendus |
 | `/settings` | Page de paramètres temporaire |
 
+## Flux des données réelles
+
+Le dashboard et les pages de listes utilisent maintenant la base alimentée par les fixtures Doctrine. Les recherches et filtres de statut sont gérés par les paramètres de requête Symfony et transmis aux repositories, par exemple :
+
+```text
+/sales?q=SAL-00001&status=completed
+/customers?q=Danial
+/products?q=SB-0001
+/transactions?q=TXN-00001&status=completed
+```
+
+Le dashboard agrège côté Doctrine le chiffre d'affaires terminé, les revenus mensuels, les produits les plus vendus, les produits avec un stock faible et les transactions récentes. Twig ne lance aucune requête et ne calcule aucun total métier.
+
 ## Relations entre les entités
 
 - Un `Customer` possède plusieurs `Sale` et `Transaction`.
@@ -105,6 +146,7 @@ src/Controller/   Contrôleurs de pages fins
 src/DataFixtures/ Jeu de données Faker déterministe
 templates/        Pages Twig simples, point de départ de l'atelier
 migrations/       Migrations de la base Doctrine
+docs/images/      Captures du dashboard pour les étapes de l'atelier
 ```
 
 ## Réinitialiser la base
@@ -121,3 +163,22 @@ php bin/console doctrine:fixtures:load --no-interaction
 ## Objectif de l'atelier
 
 Ce dépôt commence volontairement comme une application Symfony fonctionnelle mais peu stylisée. L'atelier peut ensuite introduire progressivement un prototype généré par IA, Tailwind CSS, des composants de style shadcn, les icônes Lucide, des composants Twig et enfin les données réelles de Symfony, sans devoir démanteler un dashboard déjà finalisé.
+
+Le parcours pédagogique suit cette progression :
+
+```text
+Backend Symfony
+ -> pages Twig simples
+ -> layout Tailwind inspiré de Lovable
+ -> composants Twig réutilisables
+ -> données Doctrine réelles dans l'interface
+```
+
+L'objectif est de montrer comment adopter un système visuel moderne tout en conservant Symfony pour le routage, la sécurité, la validation, la persistance et la logique métier côté serveur.
+
+## Limites actuelles
+
+- La page Settings reste un placeholder pour l'atelier.
+- Les boutons New sale, Add customer et Add product sont actuellement visuels ; aucun formulaire CRUD n'a encore été ajouté.
+- Les listes sont limitées à 100 résultats. Une pagination complète pourra être ajoutée lorsque le volume dépassera l'échelle de l'atelier.
+- Les identifiants de fixture sont réservés au développement et ne conviennent pas à la production.

@@ -1,19 +1,47 @@
 # SalesBoard
 
-SalesBoard is a deliberately simple Symfony backend for a live workshop about transforming a basic Symfony application into a modern interface with Twig, Tailwind CSS, and shadcn-style components. The first version keeps the UI plain so the visual transformation is easy to see.
+SalesBoard is an educational business-management application for a live workshop. It starts from a functional Symfony backend and progressively transforms its server-rendered Twig interface into a modern SaaS-style operations console inspired by a Lovable prototype.
 
-![SalesBoard dashboard](docs/images/dashboard.png)
+The [Lovable project](https://github.com/Asmitta-01/salesboard-ui-demo) is used as a visual and UX reference only. It is not copied as a frontend architecture: SalesBoard remains a classic Symfony MVC application with Doctrine, controllers, services, Twig templates, and AssetMapper.
+
+![SalesBoard dashboard](docs/images/dashboard-real-data-step-3.png)
+
+### Workshop progress
+
+| Stage | Description | Screenshot |
+| --- | --- | --- |
+| 1. Symfony foundation | Basic Twig pages, Doctrine entities, migrations, and fixtures | [Initial dashboard](docs/images/dashboard.png) |
+| 2. UI foundation | Tailwind CSS, shadcn-style tokens, reusable Twig components, responsive layout | [Tailwind step](docs/images/dashboard-tailwind-step-2.png) |
+| 3. Real application data | Dashboard and list pages connected to Doctrine repositories and services | [Real-data dashboard](docs/images/dashboard-real-data-step-3.png) |
 
 ## Technical stack
 
-- Symfony 8.1 and PHP 8.4+
+- PHP 8.4+ (the project currently runs with PHP 8.5 in development)
+- Symfony 8.1.x (the current local runtime is Symfony 8.1.6)
 - Doctrine ORM and Doctrine Migrations
-- MySQL or MariaDB
+- MySQL 8+ or MariaDB 10.8+
 - Twig, Symfony Forms, Validator, Serializer, and UX Turbo
-- Symfony AssetMapper
+- Symfony AssetMapper and Importmap
+- Tailwind CSS 4 through SymfonyCasts Tailwind Bundle
+- shadcn-style Tailwind tokens and `tw-animate-css`
 - DoctrineFixturesBundle and Faker
 
-No React, Vue, Vite, or polished frontend framework is included.
+The current importmap pins `shadcn/dist/tailwind.css` to 4.21.0 and `tw-animate-css/dist/tw-animate.css` to 1.4.0. The Google Fonts stylesheet loads Inter and JetBrains Mono for the prototype-inspired visual language.
+
+No React, Vue, Next.js, Vite, Angular, or SPA architecture is included.
+
+## Project context
+
+SalesBoard is fictional and intended for educational use. It gives workshop participants a realistic backend before they redesign the interface. The application domain covers sales, customers, products, transactions, inventory levels, and business reporting.
+
+The project deliberately separates responsibilities:
+
+- Doctrine entities model the business domain.
+- Repositories own filtered lists and aggregate queries.
+- `DashboardService` assembles dashboard and report statistics.
+- Controllers select the page and pass prepared data to Twig.
+- Twig components provide the shared visual language without introducing a frontend framework.
+- AssetMapper loads the CSS and JavaScript entrypoints without a bundler or Vite.
 
 ## Requirements
 
@@ -80,6 +108,19 @@ php -S 127.0.0.1:8000 -t public
 | `/reports` | Basic monthly and top-product statistics |
 | `/settings` | Placeholder settings page |
 
+## Real data flow
+
+The dashboard and list pages now use the database populated by Doctrine fixtures. Search and status filters are handled by Symfony request query parameters and translated into repository queries, for example:
+
+```text
+/sales?q=SAL-00001&status=completed
+/customers?q=Danial
+/products?q=SB-0001
+/transactions?q=TXN-00001&status=completed
+```
+
+The dashboard aggregates completed revenue, monthly revenue, top products, low-stock products, and recent transactions through Doctrine queries. Twig does not issue database queries or calculate business totals.
+
 ## Entity relationships
 
 - A `Customer` has many `Sale` and `Transaction` records.
@@ -105,6 +146,7 @@ src/Controller/   Thin page controllers
 src/DataFixtures/ Deterministic Faker dataset
 templates/        Basic Twig pages for the workshop starting point
 migrations/       Doctrine database migrations
+docs/images/      Workshop dashboard screenshots
 ```
 
 ## Resetting the database
@@ -120,4 +162,21 @@ php bin/console doctrine:fixtures:load --no-interaction
 
 ## Workshop purpose
 
-This repository intentionally begins as a functional but unstyled Symfony application. The workshop can progressively introduce an AI-generated prototype, Tailwind CSS, shadcn-style components, Lucide icons, Twig components, and finally real Symfony data without first undoing a finished dashboard design.
+This repository intentionally begins as a functional Symfony application and progresses through a visible transformation:
+
+```text
+Symfony backend
+ -> basic Twig pages
+ -> Lovable-inspired Tailwind layout
+ -> reusable Twig components
+ -> real Doctrine data in the interface
+```
+
+The goal is to show how a developer can adopt a modern visual system while keeping Symfony responsible for routing, security, validation, persistence, and server-side business logic.
+
+## Current limitations
+
+- The Settings page is still a workshop placeholder.
+- The New sale, Add customer, and Add product buttons are visual actions only; no CRUD Forms have been added yet.
+- List queries currently cap results at 100 records. Full pagination can be added when the dataset grows beyond the workshop scale.
+- The development fixture credentials are not suitable for production.

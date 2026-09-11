@@ -3,13 +3,14 @@
 namespace App\Entity;
 
 use App\Entity\SaleItem;
+use App\Repository\SaleRepository;
 use App\Enum\SaleStatus;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: SaleRepository::class)]
 #[ORM\Index(columns: ['sale_date'], name: 'idx_sale_date')]
 #[ORM\Index(columns: ['status'], name: 'idx_sale_status')]
 class Sale

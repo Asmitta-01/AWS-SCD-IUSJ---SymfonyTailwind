@@ -3,13 +3,14 @@
 namespace App\Entity;
 
 use App\Entity\Sale;
+use App\Repository\CustomerRepository;
 use App\Enum\CustomerStatus;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: CustomerRepository::class)]
 #[ORM\Index(columns: ['status'], name: 'idx_customer_status')]
 class Customer
 {

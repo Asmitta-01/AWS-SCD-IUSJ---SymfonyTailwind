@@ -2,45 +2,44 @@
 
 namespace App\Service;
 
-use App\Entity\Customer;
-use App\Entity\Product;
-use App\Entity\Sale;
-use App\Entity\SaleItem;
-use App\Entity\Transaction;
-use App\Enum\SaleStatus;
-use Doctrine\ORM\EntityManagerInterface;
-
+use App\Repository\CustomerRepository;
+use App\Repository\ProductRepository;
+use App\Repository\SaleItemRepository;
+use App\Repository\SaleRepository;
+use App\Repository\TransactionRepository;
 class DashboardService
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager) {}
+    public function __construct(
+        private readonly CustomerRepository $customerRepository,
+        private readonly SaleRepository $saleRepository,
+        private readonly SaleItemRepository $saleItemRepository,
+        private readonly ProductRepository $productRepository,
+        private readonly TransactionRepository $transactionRepository,
+    ) {}
 
     public function getStatistics(): array
     {
-        $sales = $this->entityManager->getRepository(Sale::class)->findAll();
-        $completedSales = array_filter($sales, static fn(Sale $sale): bool => $sale->getStatus() === SaleStatus::COMPLETED);
-        $revenue = array_sum(array_map(static fn(Sale $sale): float => (float) $sale->getTotal(), $completedSales));
+        $summary = $this->saleRepository->getCompletedSummary();
         $productTotals = [];
-        foreach ($this->entityManager->getRepository(SaleItem::class)->findAll() as $item) {
-            $name = $item->getProduct()?->getName() ?? 'Unknown';
-            $productTotals[$name] = ($productTotals[$name] ?? 0) + $item->getQuantity();
+        foreach ($this->saleItemRepository->findTopProducts() as $product) {
+            $productTotals[$product['name']] = (int) $product['quantity'];
         }
-        arsort($productTotals);
         $salesByMonth = [];
-        foreach ($completedSales as $sale) {
-            $month = $sale->getSaleDate()->format('Y-m');
-            $salesByMonth[$month] = ($salesByMonth[$month] ?? 0) + (float) $sale->getTotal();
+        foreach ($this->saleRepository->findCompletedForTrend() as $sale) {
+            $month = $sale['saleDate']->format('Y-m');
+            $salesByMonth[$month] = ($salesByMonth[$month] ?? 0) + (float) $sale['total'];
         }
         ksort($salesByMonth);
 
         return [
-            'totalRevenue' => $revenue,
-            'totalSales' => count($sales),
-            'totalCustomers' => $this->entityManager->getRepository(Customer::class)->count([]),
-            'averageOrderValue' => count($completedSales) > 0 ? $revenue / count($completedSales) : 0,
+            'totalRevenue' => $summary['revenue'],
+            'totalSales' => $this->saleRepository->count([]),
+            'totalCustomers' => $this->customerRepository->count([]),
+            'averageOrderValue' => $summary['count'] > 0 ? $summary['revenue'] / $summary['count'] : 0,
             'salesOverTime' => $salesByMonth,
-            'recentTransactions' => $this->entityManager->getRepository(Transaction::class)->findBy([], ['transactionDate' => 'DESC'], 8),
+            'recentTransactions' => $this->transactionRepository->findRecent(),
             'topProducts' => array_slice($productTotals, 0, 5, true),
-            'lowStockProducts' => array_values(array_filter($this->entityManager->getRepository(Product::class)->findBy([], ['stockQuantity' => 'ASC']), static fn(Product $product): bool => $product->isLowStock() || $product->isOutOfStock())),
+            'lowStockProducts' => $this->productRepository->findLowStock(),
         ];
     }
 }

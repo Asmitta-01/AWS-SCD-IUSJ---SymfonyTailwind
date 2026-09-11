@@ -3,10 +3,11 @@
 namespace App\Entity;
 
 use App\Entity\Sale;
+use App\Repository\SaleItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: SaleItemRepository::class)]
 class SaleItem
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column] private ?int $id = null;

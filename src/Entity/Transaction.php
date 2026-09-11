@@ -5,9 +5,10 @@ namespace App\Entity;
 use App\Enum\PaymentMethod;
 use App\Enum\TransactionStatus;
 use App\Entity\Sale;
+use App\Repository\TransactionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ORM\Table(name: 'transactions')]
 #[ORM\Index(columns: ['transaction_date'], name: 'idx_transaction_date')]
 #[ORM\Index(columns: ['status'], name: 'idx_transaction_status')]

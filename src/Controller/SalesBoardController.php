@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Customer;
-use App\Entity\Product;
-use App\Entity\Sale;
-use App\Entity\Transaction;
+use App\Enum\SaleStatus;
+use App\Repository\CustomerRepository;
+use App\Repository\ProductRepository;
+use App\Repository\SaleRepository;
+use App\Repository\TransactionRepository;
 use App\Service\DashboardService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -23,34 +24,42 @@ class SalesBoardController extends AbstractController
     }
 
     #[Route('/sales', name: 'sales')]
-    public function sales(EntityManagerInterface $em): Response
+    public function sales(Request $request, SaleRepository $saleRepository): Response
     {
+        $status = SaleStatus::tryFrom((string) $request->query->get('status'));
+
         return $this->render('sales/index.html.twig', [
-            'sales' => $em->getRepository(Sale::class)->findBy([], ['saleDate' => 'DESC']),
+            'sales' => $saleRepository->findForList($request->query->get('q'), $status),
+            'search' => $request->query->get('q', ''),
+            'selectedStatus' => $status?->value,
         ]);
     }
 
     #[Route('/customers', name: 'customers')]
-    public function customers(EntityManagerInterface $em): Response
+    public function customers(Request $request, CustomerRepository $customerRepository): Response
     {
         return $this->render('customers/index.html.twig', [
-            'customers' => $em->getRepository(Customer::class)->findBy([], ['lastName' => 'ASC']),
+            'customers' => $customerRepository->findForList($request->query->get('q')),
+            'search' => $request->query->get('q', ''),
         ]);
     }
 
     #[Route('/products', name: 'products')]
-    public function products(EntityManagerInterface $em): Response
+    public function products(Request $request, ProductRepository $productRepository): Response
     {
         return $this->render('products/index.html.twig', [
-            'products' => $em->getRepository(Product::class)->findBy([], ['name' => 'ASC']),
+            'products' => $productRepository->findForList($request->query->get('q')),
+            'search' => $request->query->get('q', ''),
         ]);
     }
 
     #[Route('/transactions', name: 'transactions')]
-    public function transactions(EntityManagerInterface $em): Response
+    public function transactions(Request $request, TransactionRepository $transactionRepository): Response
     {
         return $this->render('transactions/index.html.twig', [
-            'transactions' => $em->getRepository(Transaction::class)->findBy([], ['transactionDate' => 'DESC']),
+            'transactions' => $transactionRepository->findForList($request->query->get('q'), $request->query->get('status')),
+            'search' => $request->query->get('q', ''),
+            'selectedStatus' => $request->query->get('status', ''),
         ]);
     }
 

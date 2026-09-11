@@ -4,7 +4,45 @@
 
 {% block body %}
     <h1>SalesBoard dashboard</h1>
-    <ul><li>Total revenue: {{ stats.totalRevenue|number_format(2) }}</li><li>Total sales: {{ stats.totalSales }}</li><li>Total customers: {{ stats.totalCustomers }}</li><li>Average order value: {{ stats.averageOrderValue|number_format(2) }}</li></ul>
-    <h2>Recent transactions</h2><table><tr><th>Reference</th><th>Customer</th><th>Amount</th><th>Status</th></tr>{% for transaction in stats.recentTransactions %}<tr><td>{{ transaction.reference }}</td><td>{{ transaction.customer.fullName }}</td><td>{{ transaction.amount|number_format(2) }}</td><td>{{ transaction.status.value }}</td></tr>{% else %}<tr><td colspan="4">No transactions found.</td></tr>{% endfor %}</table>
-    <h2>Low-stock products</h2><ul>{% for product in stats.lowStockProducts %}<li>{{ product.name }} ({{ product.stockQuantity }} remaining)</li>{% else %}<li>No low-stock products.</li>{% endfor %}</ul>
+    <ul>
+        <li>Total revenue: {{ stats.totalRevenue|number_format(2) }}</li>
+        <li>Total sales: {{ stats.totalSales }}</li>
+        <li>Total customers: {{ stats.totalCustomers }}</li>
+        <li>Average order value: {{ stats.averageOrderValue|number_format(2) }}</li>
+    </ul>
+
+    <h2>Recent transactions</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Reference</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in stats.recentTransactions %}
+                <tr>
+                    <td>{{ transaction.reference }}</td>
+                    <td>{{ transaction.customer.fullName }}</td>
+                    <td>{{ transaction.amount|number_format(2) }}</td>
+                    <td>{{ transaction.status.value }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">No transactions found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Low-stock products</h2>
+    <ul>
+        {% for product in stats.lowStockProducts %}
+            <li>{{ product.name }} ({{ product.stockQuantity }} remaining)</li>
+        {% else %}
+            <li>No low-stock products.</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

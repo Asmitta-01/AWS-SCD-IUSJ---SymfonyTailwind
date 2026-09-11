@@ -1,1 +1,28 @@
-{% extends 'base.html.twig' %}{% block title %}Customers - SalesBoard{% endblock %}{% block body %}<h1>Customers</h1><table><tr><th>Name</th><th>Email</th><th>Company</th><th>Status</th></tr>{% for customer in customers %}<tr><td>{{ customer.fullName }}</td><td>{{ customer.email }}</td><td>{{ customer.companyName ?: '-' }}</td><td>{{ customer.status.value }}</td></tr>{% endfor %}</table>{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Customers - SalesBoard{% endblock %}
+
+{% block body %}
+    <h1>Customers</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Company</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+                <tr>
+                    <td>{{ customer.fullName }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.companyName ?: '-' }}</td>
+                    <td>{{ customer.status.value }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

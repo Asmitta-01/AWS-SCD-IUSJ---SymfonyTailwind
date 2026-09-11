@@ -27,7 +27,7 @@ class SaleRepository extends ServiceEntityRepository
         if ($search !== null && $search !== '') {
             $queryBuilder
                 ->andWhere('LOWER(sale.reference) LIKE :search OR LOWER(customer.firstName) LIKE :search OR LOWER(customer.lastName) LIKE :search')
-                ->setParameter('search', '%'.mb_strtolower($search).'%');
+                ->setParameter('search', '%' . mb_strtolower($search) . '%');
         }
 
         if ($status !== null) {

@@ -7,6 +7,7 @@ use App\Repository\ProductRepository;
 use App\Repository\SaleItemRepository;
 use App\Repository\SaleRepository;
 use App\Repository\TransactionRepository;
+
 class DashboardService
 {
     public function __construct(

@@ -25,7 +25,7 @@ class ProductRepository extends ServiceEntityRepository
         if ($search !== null && $search !== '') {
             $queryBuilder
                 ->andWhere('LOWER(product.name) LIKE :search OR LOWER(product.sku) LIKE :search OR LOWER(category.name) LIKE :search')
-                ->setParameter('search', '%'.mb_strtolower($search).'%');
+                ->setParameter('search', '%' . mb_strtolower($search) . '%');
         }
 
         return $queryBuilder->getQuery()->getResult();

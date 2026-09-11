@@ -26,7 +26,7 @@ class TransactionRepository extends ServiceEntityRepository
         if ($search !== null && $search !== '') {
             $queryBuilder
                 ->andWhere('LOWER(transaction.reference) LIKE :search OR LOWER(sale.reference) LIKE :search OR LOWER(customer.firstName) LIKE :search OR LOWER(customer.lastName) LIKE :search')
-                ->setParameter('search', '%'.mb_strtolower($search).'%');
+                ->setParameter('search', '%' . mb_strtolower($search) . '%');
         }
 
         if ($status !== null && in_array($status, ['completed', 'pending', 'failed'], true)) {

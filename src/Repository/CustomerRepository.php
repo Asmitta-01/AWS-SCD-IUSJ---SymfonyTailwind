@@ -24,7 +24,7 @@ class CustomerRepository extends ServiceEntityRepository
         if ($search !== null && $search !== '') {
             $queryBuilder
                 ->andWhere('LOWER(customer.firstName) LIKE :search OR LOWER(customer.lastName) LIKE :search OR LOWER(customer.email) LIKE :search OR LOWER(customer.companyName) LIKE :search')
-                ->setParameter('search', '%'.mb_strtolower($search).'%');
+                ->setParameter('search', '%' . mb_strtolower($search) . '%');
         }
 
         return $queryBuilder->getQuery()->getResult();

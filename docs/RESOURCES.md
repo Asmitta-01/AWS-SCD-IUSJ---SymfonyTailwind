@@ -1,0 +1,16 @@
+# Resources
+
+* **Symfony UX TailwindBundle :** [https://symfony.com/bundles/TailwindBundle/current/index.html](https://symfony.com/bundles/TailwindBundle/current/index.html)
+* **Symfony UX Shadcn UI Kit :** [https://ux.symfony.com/toolkit/kits/shadcn](https://ux.symfony.com/toolkit/kits/shadcn)
+* **shadcn/ui — Documentation :** [https://ui.shadcn.com/docs](https://ui.shadcn.com/docs)
+* **shadcn/ui — Installation :** [https://ui.shadcn.com/docs/installation](https://ui.shadcn.com/docs/installation)
+* **shadcn/ui — Manual Installation :** [https://ui.shadcn.com/docs/installation/manual](https://ui.shadcn.com/docs/installation/manual)
+* **shadcn/ui — components.json :** [https://ui.shadcn.com/docs/components-json](https://ui.shadcn.com/docs/components-json)
+* **shadcn/ui — Components :** [https://ui.shadcn.com/docs/components](https://ui.shadcn.com/docs/components)
+* **Lucide Icons :** [https://lucide.dev/](https://lucide.dev/)
+* **Anthropic — Prompting Best Practices :** [https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/prompt-templates-and-variables](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/prompt-templates-and-variables)
+* **OpenAI — Model guidance & prompting :** [https://developers.openai.com/api/docs/guides/latest-model](https://developers.openai.com/api/docs/guides/latest-model)
+* **Martin Fowler — Refinement Code Review :** [https://martinfowler.com/bliki/RefinementCodeReview.html](https://martinfowler.com/bliki/RefinementCodeReview.html)
+* **Martin Fowler — Encoding Team Standards :** [https://martinfowler.com/articles/reduce-friction-ai/encoding-team-standards.html](https://martinfowler.com/articles/reduce-friction-ai/encoding-team-standards.html)
+* **OWASP — Secure Coding Practices Quick Reference :** [https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/](https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/)
+* **OWASP Developer Guide — Secure Development :** [https://devguide.owasp.org/en/02-foundations/02-secure-development/](https://devguide.owasp.org/en/02-foundations/02-secure-development/)

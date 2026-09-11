@@ -1,8 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Settings - SalesBoard{% endblock %}
+{% block page_heading %}Settings{% endblock %}
+{% block page_subtitle %}Configure your workspace preferences{% endblock %}
 
 {% block body %}
-    <h1>Settings</h1>
-    <p>Settings are intentionally left as a workshop extension.</p>
+    <div><h2 class="text-xl font-semibold tracking-tight">Workspace settings</h2><p class="mt-1 text-sm text-muted-foreground">Settings are intentionally left as a workshop extension.</p></div>
+    <section class="max-w-3xl rounded-lg border border-border bg-card shadow-sm"><div class="border-b border-border px-5 py-4"><h2 class="text-sm font-semibold">General</h2><p class="mt-1 text-xs text-muted-foreground">Basic workspace information.</p></div><form class="space-y-5 p-5"><label class="block space-y-2"><span class="text-sm font-medium">Workspace name</span><input value="SalesBoard" class="h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"></label><label class="block space-y-2"><span class="text-sm font-medium">Default currency</span><select class="h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"><option>USD - US Dollar</option><option>EUR - Euro</option></select></label><div class="flex justify-end"><button type="button" class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">Save changes</button></div></form></section>
 {% endblock %}

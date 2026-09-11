@@ -1,0 +1,37 @@
+{% set navigation = [
+    { route: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
+    { route: 'sales', label: 'Sales', icon: 'sales' },
+    { route: 'customers', label: 'Customers', icon: 'customers' },
+    { route: 'products', label: 'Products', icon: 'products' },
+    { route: 'transactions', label: 'Transactions', icon: 'transactions' },
+    { route: 'reports', label: 'Reports', icon: 'reports' },
+    { route: 'settings', label: 'Settings', icon: 'settings' }
+] %}
+
+<aside class="hidden w-64 shrink-0 border-r border-border bg-card lg:flex lg:min-h-screen lg:flex-col">
+    <div class="flex h-16 items-center gap-3 border-b border-border px-5">
+        <span class="grid size-8 place-items-center rounded-lg bg-primary text-sm font-semibold text-primary-foreground">S</span>
+        <div class="min-w-0 leading-tight">
+            <p class="truncate text-[15px] font-semibold tracking-tight">SalesBoard</p>
+            <p class="truncate text-[11px] text-muted-foreground">Operations console</p>
+        </div>
+    </div>
+    <p class="px-5 pb-2 pt-6 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">Menu</p>
+    <nav aria-label="Main navigation" class="space-y-1 px-3">
+        {% for item in navigation %}
+            <a href="{{ path(item.route) }}" class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-colors {{ app.request.attributes.get('_route') == item.route ? 'bg-accent font-medium text-accent-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground' }}">
+                {% include 'components/_icon.html.twig' with {name: item.icon} %}
+                {{ item.label }}
+            </a>
+        {% endfor %}
+    </nav>
+    <div class="mt-auto border-t border-border p-4">
+        <div class="flex items-center gap-3 rounded-md px-2 py-2">
+            <span class="grid size-9 place-items-center rounded-full bg-primary text-sm font-medium text-primary-foreground">AU</span>
+            <div class="min-w-0 leading-tight">
+                <p class="truncate text-sm font-medium">Admin User</p>
+                <p class="truncate text-[11px] text-muted-foreground">Administrator</p>
+            </div>
+        </div>
+    </div>
+</aside>

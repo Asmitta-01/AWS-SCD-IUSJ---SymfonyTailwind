@@ -2,47 +2,60 @@
 
 {% block title %}Dashboard - SalesBoard{% endblock %}
 
+{% block page_heading %}Dashboard{% endblock %}
+{% block page_subtitle %}Overview of your business performance{% endblock %}
+
 {% block body %}
-    <h1>SalesBoard dashboard</h1>
-    <ul>
-        <li>Total revenue: {{ stats.totalRevenue|number_format(2) }}</li>
-        <li>Total sales: {{ stats.totalSales }}</li>
-        <li>Total customers: {{ stats.totalCustomers }}</li>
-        <li>Average order value: {{ stats.averageOrderValue|number_format(2) }}</li>
-    </ul>
+    <section aria-label="Key metrics" class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {% include 'components/_stat_card.html.twig' with {label: 'Revenue', value: stats.totalRevenue|number_format(2), change: 'Live', icon: 'dollar'} %}
+        {% include 'components/_stat_card.html.twig' with {label: 'Orders', value: stats.totalSales, change: '12 months', icon: 'sales'} %}
+        {% include 'components/_stat_card.html.twig' with {label: 'Customers', value: stats.totalCustomers, change: 'Active base', icon: 'customers'} %}
+        {% include 'components/_stat_card.html.twig' with {label: 'Average order', value: stats.averageOrderValue|number_format(2), change: 'Completed sales', icon: 'dashboard'} %}
+    </section>
 
-    <h2>Recent transactions</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Reference</th>
-                <th>Customer</th>
-                <th>Amount</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for transaction in stats.recentTransactions %}
-                <tr>
-                    <td>{{ transaction.reference }}</td>
-                    <td>{{ transaction.customer.fullName }}</td>
-                    <td>{{ transaction.amount|number_format(2) }}</td>
-                    <td>{{ transaction.status.value }}</td>
-                </tr>
+    <section class="rounded-lg border border-border bg-card shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
+            <div>
+                <h2 class="text-sm font-semibold tracking-tight">Sales overview</h2>
+                <p class="mt-1 text-xs text-muted-foreground">Monthly revenue, trailing 12 months</p>
+            </div>
+            <span class="flex items-center gap-2 text-xs text-muted-foreground"><span class="size-2 rounded-sm bg-primary"></span>Revenue</span>
+        </div>
+        <div class="flex h-64 items-end gap-2 overflow-x-auto px-5 py-6 sm:gap-3">
+            {% for month, amount in stats.salesOverTime %}
+                <div class="flex h-full min-w-10 flex-1 flex-col items-center justify-end gap-2">
+                    <div class="w-full rounded-t-sm bg-primary/80 transition-colors hover:bg-primary" style="height: {{ ((amount / stats.totalRevenue) * 100)|round }}%" title="{{ amount|number_format(2) }}"></div>
+                    <span class="text-[10px] text-muted-foreground">{{ month|slice(5) }}</span>
+                </div>
             {% else %}
-                <tr>
-                    <td colspan="4">No transactions found.</td>
-                </tr>
+                <p class="w-full text-center text-sm text-muted-foreground">No sales data available.</p>
             {% endfor %}
-        </tbody>
-    </table>
+        </div>
+    </section>
 
-    <h2>Low-stock products</h2>
-    <ul>
-        {% for product in stats.lowStockProducts %}
-            <li>{{ product.name }} ({{ product.stockQuantity }} remaining)</li>
-        {% else %}
-            <li>No low-stock products.</li>
-        {% endfor %}
-    </ul>
+    <section class="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div class="overflow-hidden rounded-lg border border-border bg-card shadow-sm xl:col-span-2">
+            <div class="flex items-center justify-between border-b border-border px-5 py-4">
+                <h2 class="text-sm font-semibold tracking-tight">Recent transactions</h2>
+                <a href="{{ path('transactions') }}" class="text-xs font-medium text-primary hover:underline">View all</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[620px] text-sm">
+                    <thead><tr class="border-b border-border text-left text-[10px] uppercase tracking-wider text-muted-foreground"><th class="px-5 py-3 font-medium">Customer</th><th class="px-3 py-3 font-medium">Date</th><th class="px-3 py-3 text-right font-medium">Amount</th><th class="px-5 py-3 text-right font-medium">Status</th></tr></thead>
+                    <tbody class="divide-y divide-border">
+                        {% for transaction in stats.recentTransactions %}
+                            <tr class="transition-colors hover:bg-muted/60"><td class="px-5 py-3 font-medium">{{ transaction.customer.fullName }}</td><td class="px-3 py-3 font-mono text-xs text-muted-foreground">{{ transaction.transactionDate|date('Y-m-d') }}</td><td class="px-3 py-3 text-right font-mono tabular-nums">{{ transaction.amount|number_format(2) }}</td><td class="px-5 py-3 text-right">{% include 'components/_badge.html.twig' with {label : transaction.status.value|capitalize, tone : transaction.status.value == 'completed' ? 'success' : transaction.status.value == 'pending' ? 'warning' : 'danger'} %}</td></tr>
+                        {% else %}<tr><td colspan="4" class="px-5 py-8 text-center text-sm text-muted-foreground">No transactions found.</td></tr>{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="rounded-lg border border-border bg-card shadow-sm">
+            <div class="flex items-center justify-between border-b border-border px-5 py-4"><h2 class="text-sm font-semibold tracking-tight">Low stock</h2>{% include 'components/_badge.html.twig' with {label: stats.lowStockProducts|length ~ ' items', tone: 'warning'} %}</div>
+            <ul class="divide-y divide-border">
+                {% for product in stats.lowStockProducts|slice(0, 6) %}<li class="flex items-center justify-between gap-3 px-5 py-3"><span class="min-w-0 truncate text-sm font-medium">{{ product.name }}</span><span class="shrink-0 font-mono text-xs tabular-nums text-warning-foreground">{{ product.stockQuantity }} / {{ product.minimumStock }}</span></li>{% else %}<li class="px-5 py-8 text-sm text-muted-foreground">No low-stock products.</li>{% endfor %}
+            </ul>
+        </div>
+    </section>
 {% endblock %}
